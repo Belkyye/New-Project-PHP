@@ -1,3 +1,51 @@
+<?php
+session_start();
+if(!isset($_SESSION['admin_loged_in'])){
+    header("Location: login.php");
+    exit();
+}
+
+require_once("sonfig.php");
+
+//fetch all users from database
+
+$sql = "SELECT * FROM users";
+$result = $conn->query($sql);
+
+// check if query executed seccesfully
+if(!$result){
+    die("Database query failed: ". $conn->error);
+}
+
+
+?>
+
+
+
+<?php
+require_once ("config.php");
+session_start();
+
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+    $username = $_POST['username'];
+    $password = md5($_POST['password']); //
+
+    //
+    $sql = "SELECT * FROM admin WHERE username = '$username' AND password = '$password'";
+    $result = $conn->query($sql);
+
+    if($result->num_rows == 1){
+        $_SESSION['admin_logged_in'] = true;
+        header("Location: admin.php"); //
+        exit();
+    }else{
+        $error = "invalid Username or Password!";
+    }
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

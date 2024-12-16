@@ -96,6 +96,21 @@
                 </thead>
                 <tbody>
                     <!-- Example rows -->
+                     <?phpif($result->num_rows > 0){
+                        while($row = $result->fetch_assoc()){
+                            echo "<tr>
+                            <td> {$row[id]} </td>
+                            <td>"htmlspecialchars($row['username'])."</td>
+                             <td>"htmlspecialchars($row['email'])."</td>
+
+
+                            ";
+                        }
+
+
+
+
+                     }
                     <tr>
                         <td>1</td>
                         <td>john_doe</td>
