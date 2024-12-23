@@ -1,4 +1,55 @@
+
 <?php require_once("header.php"); ?>
+
+<?php 
+require_once ("config.php");
+session_start();
+
+//check if admin is logged in
+if(!isset($_SESSION['admin_logged_in'])){
+    header("Location: login.php");
+    exit();
+}
+
+if(!isset($_GET['ID']) || empty($_GET['id'])){
+    header("Location: admin.php");
+    exit();
+}
+
+$id -intval($_GET['id']);
+$error = "";
+$sucess = "";
+
+$sql = "SELECT * FROM users WHERE id = $id";
+$result = $conn->query($sql);
+
+if($result->num_rows == 1){
+    $user = $result->fetch_assoc();
+}else{
+    header("Location: admin.php");
+    exit();
+}
+
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+    $Uusername = mysqli_real_escape_string($conn, $_POST['username']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+
+
+    if(empty($username) || empty($email)){
+        $error = "All fields are reuqired!!";
+    }else{
+        $update_sql = "UPDATE users SET username = '$username', email = '$email' WHERE id = $id";
+        if($conn->query($update_sql)){
+            $sucess = "Userupdated sucessfully";
+            //refresh the user data
+            $user['username'] = $username;
+            $user['email'] = $email;
+        }else{
+            $error = "Error updating user: ".$conn->error();
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -103,14 +154,24 @@
     <div class="card-container">
         <div class="card shadow-sm p-4">
             <h2 class="text-center mb-4">Edit User</h2>
+
+            <?phpif($error) : ?>
+                <div class = "alert alert-danger text-center"><?=htmlspcialhars($error); ?> </div>
+            <?php endif ?>
+
+            <?php if(sucess) : ?>
+                <div class ="alert alert-sucess text-center"> <?=htmlspcialhars($sucess); ?> </div>
+                <?php endif ?>
+                
             <form method="POST">
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
-                    <input type="text" class="form-control" name="username" value="username" required>
+                    <input type="text" class="form-control" name="username" value="<?php htmlspcialhars($user['username'])?>" required>
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" name="email" value="email@example.com" required>
+                    <input type="email" class="form-control" name="email" value="<?php htmlspcialhars($user['email']) ?>" required>
+                    </div>" required>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Update</button>
             </form>
