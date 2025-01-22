@@ -157,11 +157,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
             <?phpif($error) : ?>
                 <div class = "alert alert-danger text-center"><?=htmlspcialhars($error); ?> </div>
-            <?php endif ?>
+            <?php ?>
 
             <?php if(sucess) : ?>
                 <div class ="alert alert-sucess text-center"> <?=htmlspcialhars($sucess); ?> </div>
-                <?php endif ?>
+                <?php  ?>
                 
             <form method="POST">
                 <div class="mb-3">
